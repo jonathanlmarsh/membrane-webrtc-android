@@ -148,7 +148,7 @@ constructor(
 
         pc.addTrack(screencastTrack.rtcTrack(), listOf(UUID.randomUUID().toString()))
 
-        pc.enforceSendOnlyDirection()
+        // pc.enforceSendOnlyDirection()
 
         coroutineScope.launch {
             transport.send(RenegotiateTracks())
