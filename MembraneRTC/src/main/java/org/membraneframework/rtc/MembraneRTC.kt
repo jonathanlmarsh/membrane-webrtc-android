@@ -66,7 +66,7 @@ private constructor(
      * @param metadata: the metadata that will be sent to the <strong>Membrane RTC Engine</strong> for media negotiation
      * @return an instance of the video track
      */
-    public fun createVideoTrack(videoParameters: VideoParameters, metadata: Metadata): LocalVideoTrack {
+    public fun createVideoTrack(videoParameters: VideoParameters, metadata: Metadata): LocalVideoTrack? {
         return client.createLocalVideoTrack(videoParameters, metadata)
     }
 
