@@ -101,6 +101,8 @@ constructor(
     }
 
     fun createLocalVideoTrack(videoParameters: VideoParameters, metadata: Metadata = mapOf()): LocalVideoTrack {
+        val pc = peerConnection
+
         val videoTrack = LocalVideoTrack.create(
             context,
             peerConnectionFactory,
@@ -113,16 +115,34 @@ constructor(
         localTracks.add(videoTrack)
         localPeer = localPeer.withTrack(videoTrack.id(), metadata)
 
+        pc?.addTrack(videoTrack.rtcTrack(), localStreamId)
+
+        pc?.enforceSendOnlyDirection()
+
+        coroutineScope.launch {
+            transport.send(RenegotiateTracks())
+        }
+
         return videoTrack
     }
 
     fun createLocalAudioTrack(metadata: Metadata = mapOf()): LocalAudioTrack {
+        val pc = peerConnection
+
         val audioTrack = LocalAudioTrack.create(context, peerConnectionFactory).also {
             it.start()
         }
 
         localTracks.add(audioTrack)
         localPeer = localPeer.withTrack(audioTrack.id(), metadata)
+
+        pc?.addTrack(audioTrack.rtcTrack(), localStreamId)
+
+        pc?.enforceSendOnlyDirection()
+
+        coroutineScope.launch {
+            transport.send(RenegotiateTracks())
+        }
 
         return audioTrack
     }
