@@ -100,23 +100,7 @@ constructor(
         }
     }
 
-    fun createLocalVideoTrack(videoParameters: VideoParameters, metadata: Metadata = mapOf()): LocalVideoTrack? {
-//        val videoTrack = LocalVideoTrack.create(
-//            context,
-//            peerConnectionFactory,
-//            eglBase,
-//            videoParameters
-//        ).also {
-//            it.start()
-//        }
-//
-//        localTracks.add(videoTrack)
-//        localPeer = localPeer.withTrack(videoTrack.id(), metadata)
-//
-//        return videoTrack
-
-        val pc = peerConnection ?: return null
-
+    fun createLocalVideoTrack(videoParameters: VideoParameters, metadata: Metadata = mapOf()): LocalVideoTrack {
         val videoTrack = LocalVideoTrack.create(
             context,
             peerConnectionFactory,
@@ -128,14 +112,6 @@ constructor(
 
         localTracks.add(videoTrack)
         localPeer = localPeer.withTrack(videoTrack.id(), metadata)
-
-        pc.addTrack(videoTrack.rtcTrack(), localStreamId)
-
-        pc.enforceSendOnlyDirection()
-
-        coroutineScope.launch {
-            transport.send(RenegotiateTracks())
-        }
 
         return videoTrack
     }
