@@ -114,7 +114,6 @@ constructor(
         localTracks.add(videoTrack)
         localPeer = localPeer.withTrack(videoTrack.id(), metadata)
 
-
         peerConnection?.let {
             it.addTrack(videoTrack.rtcTrack(), localStreamId)
             it.enforceSendOnlyDirection()
@@ -133,6 +132,14 @@ constructor(
 
         localTracks.add(audioTrack)
         localPeer = localPeer.withTrack(audioTrack.id(), metadata)
+
+        peerConnection?.let {
+            it.addTrack(audioTrack.rtcTrack(), localStreamId)
+            it.enforceSendOnlyDirection()
+            coroutineScope.launch {
+                transport.send(RenegotiateTracks())
+            }
+        }
 
         return audioTrack
     }
